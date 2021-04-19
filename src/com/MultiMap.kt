@@ -11,11 +11,10 @@ class MultiMap<K, V> {
     }
 
     fun values(key: K): Unit {
-         val s =  map.getValue(key).toString().replace("[","")
-        val str = s.replace("]","")
-        var result: List<Any> = str.split(",").map { it.trim() }
-
-        result.forEach { println(it) }
+        var result: List<Any> =  map.getValue(key).toString().replace("[", "").replace("]", "").split(",")
+        for (i in result) {
+            println(i)
+        }
     }
 
 

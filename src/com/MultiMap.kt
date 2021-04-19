@@ -8,10 +8,14 @@ class MultiMap<K, V> {
         map[key]!!.add(value)
     }
 
-    fun values(key: K): Unit {
-        var result: List<Any> =  map.getValue(key).toString().replace("[", "").replace("]", "").split(",")
-        for (i in result) {
-            println(i)
+  fun values(key: K): Unit {
+        var result: List<Any> =  map.getValue(key).toString().replace("[", "").replace("]", "").split(",").map {
+            it.trim()
+        }
+
+        result.forEach()
+        {
+            println(it)
         }
     }
 

@@ -1,7 +1,5 @@
-package com.bank
+package com
 
-import java.util.*
-import java.util.regex.Pattern
 
 class MultiMap<K, V> {
     private val map: MutableMap<K, MutableCollection<V>?> = hashMapOf()
@@ -16,6 +14,5 @@ class MultiMap<K, V> {
             println(i)
         }
     }
-
 
 }

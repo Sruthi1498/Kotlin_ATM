@@ -1,5 +1,8 @@
-package com.bank
+package com
 
+import com.bank.Account
+import com.bank.Card
+import com.bank.User
 import com.database.AccountDb
 import com.database.UserDb
 import com.database.CardDb

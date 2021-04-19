@@ -4,12 +4,14 @@ import com.database.AccountDb
 import com.database.UserDb
 import com.database.CardDb
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.NoSuchElementException
 
-class Mini(private var amount:Double,private var desc: String, private var card: String)
+data class Mini(private var amount:Double,private var type: String,private var desc: String, private var card: String)
 {
     override fun toString(): String {
-        return "$amount $desc $card"
+
+        return "$ $amount   $type   $desc $card"
     }
 }
 
@@ -21,13 +23,13 @@ class Atm {
     private val accountDb = AccountDb()
     private val userDb = UserDb()
     private val i = 0
-    private var map = MultiMap<String, Mini>()
+    private var map = MultiMap<Long, Mini>()
 
     fun start() {
         println("Enter your card number")
         val c = readLine()
         c.let {
-            card = cardDb.findCard(c.toString())
+            card = cardDb.findCard(c!!.toLong())
             user = userDb.findDb(card.UserId)
             account = accountDb.findAcc(user.UserId)!!
             println("Welcome, ${user.name}")
@@ -58,7 +60,7 @@ class Atm {
             if (amt.toInt() > 0 && pin()) {
                 accountDb.deposit(account.UserId, amt.toDouble())
                 println("$amt successfully deposited")
-                val a = Mini(amt.toDouble(),"DEPOSITED FROM", card.number)
+                val a = Mini(amt.toDouble(),"DEPOSIT","Deposited to", card.number.toString())
                 map.put(card.number,a)
             } else {
                 println("Enter a valid amount")
@@ -79,7 +81,7 @@ class Atm {
                 accountDb.withdraw(account.UserId, amt.toDouble())
                 println("$amt successfully withdrawn")
                 println()
-                val a = Mini(amt.toDouble(), "WITHDRAWN FROM", card.number)
+                val a = Mini(amt.toDouble(),"WITHDRAW", "Withdrawn from", card.number.toString())
                 map.put(card.number, a)
             } else {
                 println("Enter a valid amount")
@@ -104,7 +106,7 @@ class Atm {
             val tAmt = readLine()
             if (tAmt != null) {
                 if(amount>tAmt.toDouble()) {
-                    val tCard = cardDb.findCard(cardNo.toString())
+                    val tCard = cardDb.findCard(cardNo!!.toLong())
                     val tUser = userDb.findDb(tCard.UserId)
                     val tAccount = accountDb.findAcc(tUser.UserId)
 
@@ -113,10 +115,10 @@ class Atm {
 
                     println("Transferred from ${user.name} to ${tUser.name}")
                     println()
-                    val a = Mini(tAmt.toDouble(),"TRANSFERRED TO", tUser.name)
-                    val b = Mini(tAmt.toDouble(), "TRANSFERRED FROM", user.name)
+                    val a = Mini(tAmt.toDouble(),"TRANSFER","Transferred to", tUser.name)
+                    val b = Mini(tAmt.toDouble(),"TRANSFER", "Transferred from", user.name)
                     map.put(card.number,a)
-                    map.put(cardNo.toString(),b)
+                    map.put(cardNo.toLong(),b)
                 } else {
                     println("Insufficient balance")
                     transfer()
@@ -135,12 +137,19 @@ class Atm {
     }
     private fun miniStatement()
     {
-            println("----MINI STATEMENT----")
-            println("DATE: ${LocalDateTime.now()}")
+            println("------------MINI STATEMENT------------")
+        println()
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formatted = current.format(formatter)
+
+        println("Date and Time: $formatted")
             println("NAME: ${user.name}")
+        println()
+        println("AMOUNT    TYPE       DESC")
+        println("---------------------------------------------")
             try {
-                if(this.card.number == card.number)
-                    println(map.values(card.number))
+                    map.values(card.number)
             }
             catch (e: NoSuchElementException)
             {

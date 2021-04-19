@@ -17,21 +17,18 @@ class AccountDb{
     }
     fun balance(UserID: Int): Double
     {
-        return accountDetails[getIndex(UserID)].balance
+        return (accountDetails.find { it.UserId == UserID})!!.balance
     }
 
     fun withdraw(userId: Int, amount:Double)
     {
-        accountDetails[getIndex(userId)].balance -= amount
+        (accountDetails.find { it.UserId == userId })!!.balance -= amount
     }
     fun deposit(userId: Int, amount: Double)
     {
-        accountDetails[getIndex(userId)].balance += amount
+        (accountDetails.find { it.UserId == userId })!!.balance += amount
     }
 
-    fun getIndex(UserId:Int):Int {
-       return accountDetails.indexOf(accountDetails.find { it.UserId == UserId })
+}
 
-}
-}
 
